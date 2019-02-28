@@ -1,0 +1,3 @@
+customer,id_customer,nama,alamat,no_telp
+barang,id_barang,nama_barang,harga,jml_stock
+membeli,id_customer,id_barang,tgl_beli,jml_beli
