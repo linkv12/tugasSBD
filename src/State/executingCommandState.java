@@ -12,6 +12,12 @@ public class executingCommandState {
 
     // method & function
     public void execCommand(String command) {
+        System.out.println("Output : ");
+        // check is command empty
+        if (command.isEmpty()) {
+            System.out.println("SQL command is empty");
+            return ;
+        }
         // clean "space_char" from the back of command
         while (command.charAt(command.length()-1) == ' ') {
             command = removeXLastChar(command,' ');
@@ -20,6 +26,9 @@ public class executingCommandState {
         while (command.charAt(0) == ' ') {
             command = removeXFirstChar(command,' ');
         }
+
+
+
         // check if last char === ;
         if (command.charAt(command.length()-1) == ';') {
             command = removeXLastChar(command,';');
@@ -103,7 +112,48 @@ public class executingCommandState {
     private void execJoinCommand(String colNameReq, String tableFrom, String tableJoin, String field_to_join) {
         // will start to clean colNameReq
         String[] parsedColNameReq = colNameReq.split(",");
+        // init col list
+        List<String> colInTableFrom = new ArrayList<>(),colInTableJoin = new ArrayList<>();
+        List<String> cleanCol = new ArrayList<>();
+        System.out.println("customer".split(".")[0]);
+        // this one is to clean colNameReq
+        for (String col : parsedColNameReq) {
+            //
+            System.out.println(col.split(".").length);
+             for (String gg : col.split(".")){
+                 System.out.println(gg);
+            }
 
+
+            // clean col from _tname.colname_
+            System.out.println(col);
+            if (col.contains(".")) {
+                cleanCol.add(col.split(".")[1]);
+            } else {
+                cleanCol.add(col);
+            }
+            // col should be clean now
+
+            // adding to valid col name from actual table
+            if (new tableModel().isColInColList(col,new tableDatabase().getTableModel(tableFrom))) {
+                colInTableFrom.add(col);
+            }
+            if (new tableModel().isColInColList(col,new tableDatabase().getTableModel(tableFrom))) {
+                colInTableFrom.add(col);
+            }
+        }
+
+
+        /*
+        * Output :
+        * Tabel (1) : Mahasiswa
+        * List Kolom : nim, nama
+        * Tabel (2) : registrasi
+        * List Kolom : nim, kode, nilai
+        **/
+
+        execSelectColumnCommand(arrayListtoString(colInTableFrom).split(","),tableFrom);
+        execSelectColumnCommand(arrayListtoString(colInTableJoin).split(","),tableJoin);
 
     }
 
@@ -137,7 +187,25 @@ public class executingCommandState {
         }
     }
 
+    public String arrayListtoString (List<String> arrList) {
+        if (arrList == null) {
+            return null;
+        } else {
+            String temp = "";
+            for (String s : arrList) {
+                if (s.equalsIgnoreCase(arrList.get(arrList.size()-1))) {
+                    temp = temp+s;
+                } else {
+                    temp = temp + s + ",";
+                }
+            }
+            return temp;
+        }
+    }
+
     public static void main(String[] args) {
     //System.out.println(removeFirstChar("command"));
+        new executingCommandState().execCommand("select c.id_customer,nama,id_barang from customer c join membeli m on (c.id_customer = m.id_customer);");
+        //new executingCommandState().execCommand("select c.id_customer,nama,id_barang from customer c join membeli m on (c.id_customer = m.id_customer);");
     }
 }

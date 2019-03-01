@@ -67,8 +67,8 @@ public class tableModel {
 
 
     public void printLine (String line) {
-        System.out.println();
-        for (int i = 0 ; i <= 29; i++) {
+        System.out.println("");
+        for (int i = 0 ; i <= 28; i++) {
             System.out.print(line);
         }
         System.out.print("\n");
@@ -85,20 +85,46 @@ public class tableModel {
         }
         if (theOne != null) {
             printLine("-");
-            System.out.println("T.Name :\t"+theOne.getTableName());
-            System.out.print("Col.Name :\t");
-            for (String columnNameReq : colName) {
-                for (String columnInTable : theOne.getTableCol()) {
-                    if (columnNameReq.equalsIgnoreCase(columnInTable)) {
-                        if (columnNameReq.equalsIgnoreCase(colName[colName.length-1])) {
-                            System.out.print(columnInTable);
-                        } else {
-                            System.out.print(columnInTable+", ");
-                        }
+            System.out.println("T.Name \t\t: "+theOne.getTableName());
+            if (checkColNameValid(colName,theOne.getTableCol())) {
+                System.out.print("Col.Name \t: ");
+                for (String nameCol : colName) {
+                    if (nameCol.equalsIgnoreCase(colName[colName.length -1])) {
+                        //System.out.println(nameCol);
+                        System.out.println(nameCol+"\n");
+                    } else {
+                        System.out.print(nameCol+" ,");
                     }
                 }
+            } else {
+                System.out.println("SQL error column not exist");
             }
             printLine("-");
+        } else {
+            System.out.println("SQL error tables not exist");
         }
+    }
+
+
+
+    private boolean checkColNameValid(String[] colName, List<String> tableCol) {
+        boolean isAllLegal = true;
+        for (String sinArray : colName) {
+            isAllLegal = isColInColList(sinArray,tableCol);
+        }
+        return isAllLegal;
+    }
+
+    private boolean isColInColList(String str, List<String> list) {
+        for (String listContent: list) {
+            if (str.equalsIgnoreCase(listContent)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isColInColList(String str, tableModel tModel) {
+        return isColInColList(str,tModel.getTableCol());
     }
 }

@@ -70,6 +70,15 @@ public class tableDatabase {
         }
     }
 
+    public tableModel getTableModel (String table_name) {
+        //List<tableModel> tempModel = readTable();
+        for (tableModel tm : readTable()) {
+            if (tm.getTableName().equalsIgnoreCase(table_name)) {
+                return tm;
+            }
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         //System.out.println("check1");
