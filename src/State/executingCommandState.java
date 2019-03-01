@@ -115,34 +115,47 @@ public class executingCommandState {
         // init col list
         List<String> colInTableFrom = new ArrayList<>(),colInTableJoin = new ArrayList<>();
         List<String> cleanCol = new ArrayList<>();
-        System.out.println("customer".split(".")[0]);
+//        System.out.println("customer".split(".")[0]);
         // this one is to clean colNameReq
         for (String col : parsedColNameReq) {
-            //
-            System.out.println(col.split(".").length);
-             for (String gg : col.split(".")){
-                 System.out.println(gg);
-            }
-
-
             // clean col from _tname.colname_
-            System.out.println(col);
             if (col.contains(".")) {
-                cleanCol.add(col.split(".")[1]);
+                int pointIdx = -1;
+                for (int i = 0; i < col.length(); i++){
+                    if (col.charAt(i) == '.') {
+                        pointIdx = i;
+                    }
+                }
+                cleanCol.add(removeCharAfter(col,pointIdx));
             } else {
                 cleanCol.add(col);
             }
             // col should be clean now
-
-            // adding to valid col name from actual table
-            if (new tableModel().isColInColList(col,new tableDatabase().getTableModel(tableFrom))) {
-                colInTableFrom.add(col);
-            }
-            if (new tableModel().isColInColList(col,new tableDatabase().getTableModel(tableFrom))) {
-                colInTableFrom.add(col);
-            }
+            //---------------------
+               // for (String su : cleanCol) {
+                //    System.out.println("inCLean col : " + su);
+               // }
+            //--------------------
         }
 
+        for (String colName : cleanCol) {
+            // adding to valid col name from actual table
+            //System.out.println("this one is will added to something : "+colName);
+            if (new tableModel().isColInColList(colName,new tableDatabase().getTableModel(tableFrom))) {
+            //    System.out.println("this one is will added to colFrom : "+colName);
+                colInTableFrom.add(colName);
+            }
+            if (new tableModel().isColInColList(colName,new tableDatabase().getTableModel(tableJoin))) {
+          //      System.out.println("this one is will added to colJoin : "+colName);
+                colInTableJoin.add(colName);
+            }
+        }
+        //----- will print cleanCol
+        //System.out.println(cleanCol.size());
+        //for (String x : cleanCol) {
+        //    System.out.println("inCLean col : " + x);
+        //}
+        //------------------------
 
         /*
         * Output :
@@ -162,6 +175,9 @@ public class executingCommandState {
         new tableModel().printTable(s,new tableDatabase().readTable());
     }
 
+    private static String removeCharAfter (String str, int idx) {
+        return str.substring(idx+1,str.length());
+    }
 
     private static String removeLastChar(String str) {
         return str.substring(0, str.length() - 1);
@@ -205,7 +221,10 @@ public class executingCommandState {
 
     public static void main(String[] args) {
     //System.out.println(removeFirstChar("command"));
+        //System.out.println("m.cust".split(".")[0]);
+       // System.out.println("m.cust".contains("."));
         new executingCommandState().execCommand("select c.id_customer,nama,id_barang from customer c join membeli m on (c.id_customer = m.id_customer);");
         //new executingCommandState().execCommand("select c.id_customer,nama,id_barang from customer c join membeli m on (c.id_customer = m.id_customer);");
     }
+
 }
